@@ -8,6 +8,15 @@ android {
     namespace = "ru.local.schedulewidget"
     compileSdk = 35
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
     defaultConfig {
         applicationId = "ru.local.schedulewidget"
         minSdk = 26
