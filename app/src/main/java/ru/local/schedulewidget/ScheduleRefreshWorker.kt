@@ -8,6 +8,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import androidx.glance.appwidget.updateAll
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit

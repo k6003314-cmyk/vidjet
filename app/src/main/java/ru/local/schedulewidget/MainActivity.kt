@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
                     val weekStart = remember {
                         LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
                     }
-                    val dates = remember(weekStart) { (0..5).map(weekStart::plusDays) }
+                    val dates = remember(weekStart) { (0L..5L).map { weekStart.plusDays(it) } }
                     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
                     val parity = if (selectedDate.get(WeekFields.ISO.weekOfWeekBasedYear()) % 2 == 0) "even" else "odd"
                     val selectedLessons = lessons
