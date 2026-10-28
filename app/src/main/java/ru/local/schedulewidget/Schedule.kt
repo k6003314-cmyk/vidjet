@@ -71,6 +71,30 @@ object ScheduleRepository {
         return result
     }
 
+    fun nextTransition(context: Context, now: java.time.ZonedDateTime = java.time.ZonedDateTime.now()): java.time.ZonedDateTime? {
+        val root = context.assets.open("schedule.json").bufferedReader().use { JSONObject(it.readText()) }
+        val from = LocalDate.parse(root.getString("semesterStart"))
+        val through = LocalDate.parse(root.getString("semesterEnd"))
+        val lessons = load(context)
+        var date = if (now.toLocalDate().isBefore(from)) from else now.toLocalDate()
+        var next: java.time.ZonedDateTime? = null
+
+        while (!date.isAfter(through)) {
+            val parity = if (date.get(WeekFields.ISO.weekOfWeekBasedYear()) % 2 == 0) "even" else "odd"
+            lessons.asSequence()
+                .filter { it.day == date.dayOfWeek.value && (it.week == "both" || it.week == parity) }
+                .flatMap { lesson -> sequenceOf(lesson.start, lesson.end) }
+                .map { time -> date.atTime(time).atZone(now.zone) }
+                .filter { it.isAfter(now) }
+                .forEach { candidate ->
+                    if (next == null || candidate.isBefore(next)) next = candidate
+                }
+            if (next != null && next!!.toLocalDate() == date) return next
+            date = date.plusDays(1)
+        }
+        return next
+    }
+
     fun dayLabel(date: LocalDate, today: LocalDate): String = when (date) {
         today -> "Сегодня"
         today.plusDays(1) -> "Завтра"
